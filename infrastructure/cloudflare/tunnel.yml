@@ -1,0 +1,41 @@
+# Configuration Cloudflare Tunnel
+# Documentation: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/configuration/
+
+tunnel: ${CLOUDFLARE_TUNNEL_ID}
+credentials-file: /etc/cloudflared/credentials.json
+
+# Configuration des routes
+ingress:
+  # Route pour CrewAI
+  - hostname: crewai.1bonobo1.com
+    service: http://crewai:8000
+    originRequest:
+      noHappyEyeballs: true
+      connectTimeout: 30s
+      tcpKeepAlive: 30s
+      keepAliveConnections: 100
+      keepAliveTimeout: 90s
+      httpHostHeader: crewai.1bonobo1.com
+
+  # Route pour n8n
+  - hostname: n8n.1bonobo1.com
+    service: http://n8n:5678
+    originRequest:
+      noHappyEyeballs: true
+      connectTimeout: 30s
+      tcpKeepAlive: 30s
+      keepAliveConnections: 100
+      keepAliveTimeout: 90s
+      httpHostHeader: n8n.1bonobo1.com
+
+  # Route par défaut (catch-all)
+  - service: http_status:404
+
+# Configuration du logging
+logLevel: info
+loglevel: info
+
+# Configuration de la performance
+protocol: http2
+retries: 3
+grace-period: 30s

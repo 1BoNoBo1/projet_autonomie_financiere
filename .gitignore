@@ -1,0 +1,61 @@
+# Secrets et fichiers sensibles
+.env
+.env.local
+.env.*.local
+secrets/
+*.key
+*.pem
+*.cert
+*.crt
+id_rsa*
+*.log
+
+# Cloudflare Tunnel
+cloudflared.log
+cloudflared.pid
+.cf-tunnel/
+
+# SSH
+infrastructure/ssh/authorized_keys
+infrastructure/ssh/known_hosts
+*.pub
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Docker
+.dockerignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backups
+*.bak
+*.backup
+backups/
+
+# Logs
+logs/
+*.log

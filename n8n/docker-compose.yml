@@ -1,0 +1,33 @@
+# Configuration n8n standalone
+# Note: Cette configuration est également intégrée dans le docker-compose.yml principal
+# Ce fichier peut être utilisé pour exécuter n8n indépendamment si nécessaire
+
+version: '3.8'
+
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n-standalone
+    restart: unless-stopped
+    environment:
+      - N8N_HOST=0.0.0.0
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=https
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER:-admin}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      - WEBHOOK_URL=https://n8n.1bonobo1.com/
+      - GENERIC_TIMEZONE=Europe/Paris
+      - EXECUTIONS_DATA_PRUNE=true
+      - EXECUTIONS_DATA_MAX_AGE=168
+    volumes:
+      - ./workflows:/home/node/.n8n
+      - ./data:/home/node/.n8n/data
+    ports:
+      - "5678:5678"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:5678/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3

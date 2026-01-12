@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  # Cloudflare Tunnel
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared-tunnel
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_SECRET}
+    volumes:
+      - ./infrastructure/cloudflare/tunnel.yml:/etc/cloudflared/config.yml:ro
+    networks:
+      - autonomie-network
+    depends_on:
+      - crewai
+      - n8n
+
+  # CrewAI Service
+  crewai:
+    build:
+      context: ./crewai
+      dockerfile: Dockerfile
+    container_name: crewai-service
+    restart: unless-stopped
+    environment:
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - OPENROUTER_BASE_URL=${OPENROUTER_BASE_URL}
+      - OPENROUTER_DEFAULT_MODEL=${OPENROUTER_DEFAULT_MODEL}
+      - CREWAI_LOG_LEVEL=${CREWAI_LOG_LEVEL}
+      - CREWAI_MAX_ITER=${CREWAI_MAX_ITER}
+      - CREWAI_MAX_RPM=${CREWAI_MAX_RPM}
+      - CREWAI_TEMPERATURE=${CREWAI_TEMPERATURE}
+    volumes:
+      - ./crewai:/app
+      - ./secrets:/app/secrets:ro
+    ports:
+      - "8000:8000"
+    networks:
+      - autonomie-network
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # n8n Service
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n-service
+    restart: unless-stopped
+    environment:
+      - N8N_HOST=${N8N_HOST}
+      - N8N_PORT=${N8N_PORT}
+      - N8N_PROTOCOL=${N8N_PROTOCOL}
+      - N8N_BASIC_AUTH_ACTIVE=${N8N_BASIC_AUTH_ACTIVE}
+      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      - WEBHOOK_URL=https://n8n.1bonobo1.com/
+      - GENERIC_TIMEZONE=Europe/Paris
+    volumes:
+      - ./n8n/workflows:/home/node/.n8n
+      - ./n8n/data:/home/node/.n8n/data
+    ports:
+      - "5678:5678"
+    networks:
+      - autonomie-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:5678/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  autonomie-network:
+    driver: bridge
+    name: autonomie-network
+
+volumes:
+  n8n_data:
+    driver: local
+  crewai_data:
+    driver: local

@@ -1,0 +1,43 @@
+# Configuration Cloudflare Zero Trust Access Policies
+# Documentation: https://developers.cloudflare.com/cloudflare-one/policies/access/
+
+# Cette configuration est un template pour les politiques d'accès
+# Les politiques réelles doivent être configurées via l'interface Cloudflare Zero Trust
+
+# Exemple de politique pour CrewAI
+crewai_policy:
+  name: "CrewAI Access Policy"
+  application: "crewai.1bonobo1.com"
+  rules:
+    - name: "Allow authenticated users"
+      action: "allow"
+      conditions:
+        - email:
+            - "@1bonobo1.com"
+        - email:
+            - "your-email@example.com"
+      require:
+        - email
+
+# Exemple de politique pour n8n
+n8n_policy:
+  name: "n8n Access Policy"
+  application: "n8n.1bonobo1.com"
+  rules:
+    - name: "Allow authenticated users"
+      action: "allow"
+      conditions:
+        - email:
+            - "@1bonobo1.com"
+        - email:
+            - "your-email@example.com"
+      require:
+        - email
+        - mfa  # Require multi-factor authentication
+
+# Notes:
+# 1. Configurez ces politiques via le dashboard Cloudflare Zero Trust
+# 2. URL: https://one.dash.cloudflare.com/
+# 3. Créez une application pour chaque service (CrewAI, n8n)
+# 4. Configurez les politiques d'accès selon vos besoins
+# 5. Activez l'authentification par email ou SSO

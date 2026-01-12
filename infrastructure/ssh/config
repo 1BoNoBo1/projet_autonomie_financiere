@@ -1,0 +1,46 @@
+# Configuration SSH pour accès sécurisé au VPS
+# Placez ce fichier dans ~/.ssh/config sur votre laptop et smartphone
+# Ou utilisez-le comme référence pour configurer vos clients SSH
+
+# VPS OVH - Configuration principale
+Host vps-ovh
+    HostName ${VPS_HOST}
+    User ${VPS_USER}
+    Port ${VPS_SSH_PORT}
+    IdentityFile ${VPS_SSH_KEY_PATH}
+    IdentitiesOnly yes
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+    Compression yes
+    ForwardAgent no
+    StrictHostKeyChecking yes
+    UserKnownHostsFile ~/.ssh/known_hosts
+
+# Configuration pour accès depuis smartphone (si différent)
+Host vps-ovh-mobile
+    HostName ${VPS_HOST}
+    User ${VPS_USER}
+    Port ${VPS_SSH_PORT}
+    IdentityFile ~/.ssh/mobile_key
+    IdentitiesOnly yes
+    ServerAliveInterval 30
+    ServerAliveCountMax 5
+    Compression yes
+    ForwardAgent no
+
+# Tunnel SSH pour accès sécurisé aux services locaux
+Host vps-ovh-tunnel
+    HostName ${VPS_HOST}
+    User ${VPS_USER}
+    Port ${VPS_SSH_PORT}
+    IdentityFile ${VPS_SSH_KEY_PATH}
+    LocalForward 8000 localhost:8000  # CrewAI
+    LocalForward 5678 localhost:5678  # n8n
+    ExitOnForwardFailure yes
+
+# Instructions d'utilisation:
+# 1. Remplacez ${VPS_HOST}, ${VPS_USER}, ${VPS_SSH_PORT}, ${VPS_SSH_KEY_PATH} par vos valeurs réelles
+# 2. Sur Linux/Mac: copiez ce fichier vers ~/.ssh/config
+# 3. Sur smartphone (Termux, etc.): adaptez les chemins selon votre configuration
+# 4. Utilisez: ssh vps-ovh pour vous connecter
+# 5. Utilisez: ssh vps-ovh-tunnel pour créer des tunnels locaux
