@@ -2,12 +2,13 @@
 # Placez ce fichier dans ~/.ssh/config sur votre laptop et smartphone
 # Ou utilisez-le comme référence pour configurer vos clients SSH
 
-# VPS OVH - Configuration principale
-Host vps-ovh
-    HostName ${VPS_HOST}
-    User ${VPS_USER}
-    Port ${VPS_SSH_PORT}
-    IdentityFile ${VPS_SSH_KEY_PATH}
+# VPS OVH - Configuration pour utilisateur ubuntu (administration)
+# Pour OVH, l'utilisateur par défaut est "ubuntu" (utilisé pour l'installation)
+Host vps-ovh-admin
+    HostName 51.77.147.143
+    User ubuntu
+    Port 22
+    IdentityFile ~/.ssh/id_rsa
     IdentitiesOnly yes
     ServerAliveInterval 60
     ServerAliveCountMax 3
@@ -16,11 +17,26 @@ Host vps-ovh
     StrictHostKeyChecking yes
     UserKnownHostsFile ~/.ssh/known_hosts
 
-# Configuration pour accès depuis smartphone (si différent)
+# VPS OVH - Configuration pour utilisateur autonomie (travail quotidien)
+# Utilisateur dédié créé pour le projet (meilleure sécurité)
+Host vps-ovh
+    HostName 51.77.147.143
+    User autonomie
+    Port 22
+    IdentityFile ~/.ssh/id_rsa
+    IdentitiesOnly yes
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+    Compression yes
+    ForwardAgent no
+    StrictHostKeyChecking yes
+    UserKnownHostsFile ~/.ssh/known_hosts
+
+# Configuration pour accès depuis smartphone (utilisateur autonomie)
 Host vps-ovh-mobile
-    HostName ${VPS_HOST}
-    User ${VPS_USER}
-    Port ${VPS_SSH_PORT}
+    HostName 51.77.147.143
+    User autonomie
+    Port 22
     IdentityFile ~/.ssh/mobile_key
     IdentitiesOnly yes
     ServerAliveInterval 30
@@ -30,17 +46,22 @@ Host vps-ovh-mobile
 
 # Tunnel SSH pour accès sécurisé aux services locaux
 Host vps-ovh-tunnel
-    HostName ${VPS_HOST}
-    User ${VPS_USER}
-    Port ${VPS_SSH_PORT}
-    IdentityFile ${VPS_SSH_KEY_PATH}
+    HostName 51.77.147.143
+    User autonomie
+    Port 22
+    IdentityFile ~/.ssh/id_rsa
     LocalForward 8000 localhost:8000  # CrewAI
     LocalForward 5678 localhost:5678  # n8n
     ExitOnForwardFailure yes
 
 # Instructions d'utilisation:
-# 1. Remplacez ${VPS_HOST}, ${VPS_USER}, ${VPS_SSH_PORT}, ${VPS_SSH_KEY_PATH} par vos valeurs réelles
-# 2. Sur Linux/Mac: copiez ce fichier vers ~/.ssh/config
-# 3. Sur smartphone (Termux, etc.): adaptez les chemins selon votre configuration
-# 4. Utilisez: ssh vps-ovh pour vous connecter
+# 1. Sur Linux/Mac: copiez ce fichier vers ~/.ssh/config
+# 2. Sur smartphone (Termux, etc.): adaptez les chemins selon votre configuration
+# 3. Utilisez: ssh vps-ovh-admin pour administration (utilisateur ubuntu)
+# 4. Utilisez: ssh vps-ovh pour travail quotidien (utilisateur autonomie)
 # 5. Utilisez: ssh vps-ovh-tunnel pour créer des tunnels locaux
+# 
+# Note: 
+# - Pour OVH, l'utilisateur par défaut est "ubuntu" (administration)
+# - L'utilisateur "autonomie" est créé pour le projet (meilleure sécurité)
+# - IP du serveur: 51.77.147.143

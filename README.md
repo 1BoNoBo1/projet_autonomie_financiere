@@ -81,9 +81,12 @@ projet_autonomie_financiere/
 
 ## 📚 Documentation
 
+- **[Guide OVH](docs/ovh_setup.md)**: Guide spécifique pour la configuration OVH
 - **[Guide de Sécurité](docs/security.md)**: Configuration et bonnes pratiques de sécurité
 - **[Guide de Déploiement](docs/deployment.md)**: Instructions détaillées de déploiement
 - **[Guide de Test](docs/testing.md)**: Guide complet pour tester l'installation
+- **[Guide de Réplication](docs/replication.md)**: Réplication et migration vers un nouveau serveur
+- **[Informations Serveur](docs/server_info.md)**: Informations sur le serveur actuel
 - **[Architecture](docs/architecture.md)**: Architecture détaillée du système
 
 ## 🔐 Sécurité

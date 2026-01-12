@@ -14,7 +14,10 @@ Ce document décrit le processus de déploiement de l'infrastructure sur le VPS 
 
 ### Connexion au VPS
 ```bash
-ssh root@your-vps-ip
+# Pour OVH, l'utilisateur par défaut est "ubuntu"
+ssh ubuntu@51.77.147.143
+# ou avec la configuration SSH
+ssh vps-ovh
 ```
 
 ### Mise à jour du système
@@ -33,6 +36,7 @@ cd projet_autonomie_financiere
 
 ### Exécuter le script d'installation
 ```bash
+# IMPORTANT: Pour OVH, utilisez l'utilisateur ubuntu avec sudo
 chmod +x scripts/setup.sh
 sudo ./scripts/setup.sh
 ```
